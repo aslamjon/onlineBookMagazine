@@ -6,7 +6,6 @@ const { UserModel } = require("../models/userModel");
 async function login(req, res) {
     const secret = process.env.SALT;
     const { username, password } = req.body;
-
     try {
         const user = await UserModel.findOne({ username });
         if (!username || !password) res.status(400).send({ message: `Bed request: send me username and password` });

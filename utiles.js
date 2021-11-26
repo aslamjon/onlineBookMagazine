@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require("path");
+const _ = require('lodash');
 
 const writeData = (filename, content) => {
     fs.writeFile(filename, JSON.stringify(content, null, 4), 'utf8', (err) => {
@@ -57,15 +58,17 @@ async function saveImg(req, res, file) {
 
 async function saveImgs(req, res, fieldnames=['file']) {
     try {
-        if (req.files.length !== fieldnames.length) {
+        if (!_.isNull(req.files)) {
+            res.status(400).send({ message: `Bad request: please send ${fieldnames.join(', ')}` });
+            req.files = [];
+        } else if (req.files.length !== fieldnames.length) {
             for (let i = 0; req.files.length > i; i++) {
                 // Delete cache
                 const resUnlik = await unlink(req.files[i].path);
                 if (!resUnlik) handleError('', res);
             }
             res.status(400).send({ message: `Bad request: please send ${fieldnames.join(', ')}` });
-        }
-        else {
+        } else {
             let imgs = {}
             // check fieldname
             for (let i = 0; fieldnames.length > i; i++) {
@@ -83,6 +86,7 @@ async function saveImgs(req, res, fieldnames=['file']) {
         // throw new Error("IMAGE_IS_NOT_SAVED")
     }
 }
+// ********************************************************
 
 function rename(previousName, newName) {
     // console.log("Rename", previousName, newName);
@@ -97,16 +101,45 @@ function unlink(tempPath) {
     // console.log("UNLINK", tempPath);
     return new Promise((resolve, reject) => {
         fs.unlink(tempPath, err => {
-            if (err) resolve(0)
+            if (err) {
+                console.log(err);
+                resolve(0)
+            }
             resolve(1)
         })
     })
 }
-// ********************************************************
+
+// ************************- encoding and decoding -********************************
+const encodingBase64 = filePath => {
+    const file = fs.readFileSync(filePath, {encoding: 'base64'});
+    // return file.toString('base64');
+    return file;
+};
+
+const decodingBase64 = (data, fileName) => {
+    let buff = new Buffer.from(data, 'base64');
+    fs.writeFileSync(fileName, buff)
+}
+
+function formatDate(format, date = new Date()) {
+    const map = {
+        mm: date.getMonth() + 1,
+        dd: date.getDate(),
+        yy: date.getFullYear().toString().slice(-2),
+        yyyy: date.getFullYear()
+    }
+    return format.replace(/mm|dd|yy|yyy/gi, matched => map[matched])
+}
+
+
 module.exports = {
     writeData,
     rename,
     unlink,
     saveImg,
-    saveImgs
+    saveImgs,
+    encodingBase64,
+    decodingBase64,
+    formatDate
 }

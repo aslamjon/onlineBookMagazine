@@ -8,7 +8,7 @@ const { ifHasUser, checkUser } = require('../middlewares/authMiddleware')
 
 const router = Router();
 
-router.post('/create', checkUser , createUser)
+router.post('/create', ifHasUser , createUser)
 router.post('/login', ifHasUser, login)
 router.get('/', checkUser, getMe)
 

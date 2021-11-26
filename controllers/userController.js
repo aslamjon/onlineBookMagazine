@@ -16,16 +16,21 @@ async function createUser(req, res) {
         else if (usernameExists) res.status(400).send({ message: "Username is already exists" });
         else res.status(400).send({ message: "Email is already exists" });
     } else {
-        if (!username || !email || !password || !role) res.status(400).send({ message: "Bad request" })
+        if ( !username || !email || !password ) res.status(400).send({ message: "Bad request" })
         else {
             if (!validateEmail(email)) res.status(400).send({ message: "email: Please fill a valid email address" })
             else {
+                let userRole = 'user';
+                const { userId } = req.user;
+                let user = await UserModel.findById(userId)
+                if (user.role !== userRole) userRole = role;
+                
                 const hashedPassword = await bcrypt.hash(password, Number(process.env.SALT));
                 
                 const newUser = new UserModel({
                     username,
                     email,
-                    role,
+                    role: userRole,
                     password: hashedPassword
                 })
                 try {

@@ -31,6 +31,15 @@ const schema = new Schema({
     }
 })
 
+const schemaBlackList = new Schema({
+    username: {
+        type: String,
+        required: 'Username is required',
+        unique: true
+    }
+})
+
 module.exports = {
-    UserModel: model('User', schema)
+    UserModel: model('User', schema),
+    UserBlakListModel: model('UserBlakList', schemaBlackList)
 }

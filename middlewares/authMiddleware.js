@@ -11,20 +11,23 @@ function checkUser(req, res, next) {
                 message: "Auth error",
             });
         }
-        let decoded = jwt.verify(token, process.env.SALT); // {userId: 1}
+        let decoded = '';
+        try {
+            decoded = jwt.verify(token, process.env.SALT); // {userId: 1}
+        } catch (e) {
+            res.status(401).send({ message: "Unauthorized. Please check your token" });
+        }
         req.user = decoded;
         res.setHeader("Last-Modified", new Date().toUTCString());
         next();
     } else {
-        res.status(401).send({
-            message: "Unauthorized",
-        });
+        res.status(401).send({ message: "Unauthorized" });
     }
 }
 
 function ifHasUser(req, res, next) {
     const { authorization } = req.headers;
-
+    
     if (authorization && authorization.startsWith("Bearer")) {
         token = authorization.split(" ")[1];
         
