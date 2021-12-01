@@ -4,7 +4,8 @@ const multer = require("multer");
 
 const upload = require('express-fileupload')
 
-const { createBook, getBook, getBooks, deleteBook, updateBook } = require("../controllers/bookController");
+const { createBook, getBook, getBooks, deleteBook, updateBook, bookForLandingPage, filterBook } = require("../controllers/bookController");
+const { checkUser } = require("../middlewares/authMiddleware");
 
 const router = Router();
 
@@ -16,12 +17,13 @@ const router = Router();
 // const nameOfFileFromFrontend = upload.any();
 
 // router.post('/create', upload(), createBook)
-router.post('/create', createBook)
-router.post('/', getBook)
-router.get('/', getBooks)
-router.delete('/:id', deleteBook)
-router.put('/:id', updateBook)
-// router.get('/', getBooks)
+router.post('/create', checkUser, createBook);
+router.post('/', checkUser, getBook);
+router.get('/', checkUser, getBooks);
+router.delete('/:id', checkUser, deleteBook);
+router.put('/:id', checkUser, updateBook);
+router.get('/landing', bookForLandingPage);
+router.post('/filter', checkUser, filterBook);
 
 module.exports = {
     bookRouter: router

@@ -26,9 +26,9 @@ const schema = new Schema({
         type: Number
     },
     rating: {
-        type: String,
+        type: Number,
         required: 'Rating is required',
-        default: '0'
+        default: 0
     },
     author: {
         type: String,
@@ -60,7 +60,11 @@ const schema = new Schema({
         type: String,
         required: 'DatePublished is required'
     },
-    tags: [String]
+    tags: [String],
+    bestSelling: {
+        type: Number,
+        defualt: 0
+    }
 })
 
 module.exports = {

@@ -28,9 +28,8 @@ app.use(express.json({extended: true, limit: '50mb'}))
 
 
 
-app.use('/api/data', express.static("./data/images"));
 app.use('/api/user', userRouter);
-app.use('/api/book', checkUser, bookRouter);
+app.use('/api/book', bookRouter);
 app.use('/api/files', fileRouter);
 
 

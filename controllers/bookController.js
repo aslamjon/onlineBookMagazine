@@ -70,8 +70,35 @@ async function getBook(req, res) {
 }
 async function getBooks(req, res) {
     try {
-        const bookExists = await BookModel.find();
+        let { skip, limit } = req.query;
+        skip = Number(skip);
+        limit = Number(limit);
+        let bookExists = {};
+        if (skip <= limit) {
+            bookExists.results = await BookModel.find().skip(skip).limit(limit);
+            bookExists.count = await BookModel.find().count();
+        } else {
+            bookExists = await BookModel.find();
+        }
         res.send(bookExists);
+    } catch (e) {
+        console.log(e)
+    }
+}
+async function filterBook(req, res) {
+    try {
+        let { skip, limit } = req.query;
+        skip = Number(skip);
+        limit = Number(limit);
+        let { newest, date, category, editorPicks, publisher, year, priceRange } = req.body;
+        let bookExists = {};
+        if (skip <= limit) {
+            bookExists.results = await BookModel.find().skip(skip).limit(limit);
+            bookExists.count = await BookModel.find().count();
+        } else {
+            bookExists = await BookModel.find();
+        }
+        req.send({  })
     } catch (e) {
         console.log(e)
     }
@@ -111,10 +138,24 @@ async function updateBook(req, res) {
         res.send({ message: "This book has been updated" });
     }
 }
+
+async function bookForLandingPage(req, res) {
+    try {
+        const popular = await BookModel.find({},{title:1, img:1, publisher:1}).sort({ bestSelling: -1 }).limit(10);
+        const recommended = await BookModel.find({},{title:1, img:1, publisher:1, genre:1, price:1, discount:1}).sort({ bestSelling: -1, rating: -1 }).limit(10);
+        const users = await UserModel.find().count();
+        const books = await BookModel.find().count();
+        res.send({ popular, recommended, users, books, audioBook: 0, stories: 0 });
+    } catch (e) {
+        console.log(e)
+    }
+}
 module.exports = {
     createBook,
     getBook,
     getBooks,
     deleteBook,
-    updateBook
+    updateBook,
+    bookForLandingPage,
+    filterBook
 }
