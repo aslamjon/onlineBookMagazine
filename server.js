@@ -13,6 +13,7 @@ const { checkPermission, isAdmin } = require('./middlewares/checkPermission');
 const { userRouter } = require("./routes/userRouter");
 const { bookRouter } = require('./routes/bookRouter');
 const { fileRouter } = require('./routes/fileRouter');
+const { favouriteRouter } = require('./routes/favouriteRouter');
 
 
 
@@ -31,6 +32,7 @@ app.use(express.json({extended: true, limit: '50mb'}))
 app.use('/api/user', userRouter);
 app.use('/api/book', bookRouter);
 app.use('/api/files', fileRouter);
+app.use('/api/favourite', checkUser, favouriteRouter);
 
 
 // put the HTML file containing your form in a directory named "public" (relative to where this script is located)

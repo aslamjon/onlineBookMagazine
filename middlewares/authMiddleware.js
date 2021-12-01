@@ -18,7 +18,7 @@ function checkUser(req, res, next) {
             res.status(401).send({ message: "Unauthorized. Please check your token" });
         }
         req.user = decoded;
-        res.setHeader("Last-Modified", new Date().toUTCString());
+        // res.setHeader("Last-Modified", new Date().toUTCString());
         next();
     } else {
         res.status(401).send({ message: "Unauthorized" });

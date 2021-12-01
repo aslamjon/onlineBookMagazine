@@ -4,7 +4,7 @@ const multer = require("multer");
 
 const upload = require('express-fileupload')
 
-const { createBook, getBook, getBooks, deleteBook, updateBook, bookForLandingPage, filterBook } = require("../controllers/bookController");
+const { createBook, getBook, getBooks, deleteBook, updateBook, bookForLandingPage, filterBook, toggleFavourite } = require("../controllers/bookController");
 const { checkUser } = require("../middlewares/authMiddleware");
 
 const router = Router();
@@ -24,6 +24,7 @@ router.delete('/:id', checkUser, deleteBook);
 router.put('/:id', checkUser, updateBook);
 router.get('/landing', bookForLandingPage);
 router.post('/filter', checkUser, filterBook);
+router.post('/favourite', checkUser, toggleFavourite);
 
 module.exports = {
     bookRouter: router

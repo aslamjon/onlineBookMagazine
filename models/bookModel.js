@@ -64,7 +64,8 @@ const schema = new Schema({
     bestSelling: {
         type: Number,
         defualt: 0
-    }
+    },
+    
 })
 
 module.exports = {

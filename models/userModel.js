@@ -28,7 +28,8 @@ const schema = new Schema({
         type: String,
         required: true,
         default: 'user'
-    }
+    },
+    favourite: Schema.Types.Mixed
 })
 
 const schemaBlackList = new Schema({

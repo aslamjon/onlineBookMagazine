@@ -85,6 +85,39 @@ async function getBooks(req, res) {
         console.log(e)
     }
 }
+
+async function toggleFavourite(req, res) {
+    try {
+        const { bookId } = req.body;
+        const { userId } = req.user;
+        const bookExists = await BookModel.findById(bookId);
+        const user = await UserModel.findById(userId);
+
+        if (!bookId) res.status(400).send({ message: "Bad request. Please enter book's id and try again" });
+        else if (!bookExists) res.status(404).send({ message: "Book not found" });
+        else if (user.favourite[bookId]) {
+            delete user.favourite[bookId];
+            const update = await UserModel.findOneAndUpdate({_id: userId}, {...user});
+            res.send({ message: "Favourite has been deleted" });
+        }
+        else {
+            const update = await UserModel.findOneAndUpdate({_id: userId}, {
+                username: user.username,
+                email: user.email,
+                password: user.password,
+                role: user.role,
+                favourite: {
+                    ...user.favourite,
+                    [bookId]: bookExists.title
+                }
+            });
+            res.send({ message: "Favourite has been created" });
+        }
+    } catch (e) {
+        console.log(e)
+    }
+}
+
 async function filterBook(req, res) {
     try {
         let { skip, limit } = req.query;
@@ -157,5 +190,6 @@ module.exports = {
     deleteBook,
     updateBook,
     bookForLandingPage,
-    filterBook
+    filterBook,
+    toggleFavourite
 }
