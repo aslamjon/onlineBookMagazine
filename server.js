@@ -13,6 +13,7 @@ const { checkPermission, isAdmin } = require('./middlewares/checkPermission');
 const { userRouter } = require("./routes/userRouter");
 const { bookRouter } = require('./routes/bookRouter');
 const { fileRouter } = require('./routes/fileRouter');
+const { audioBookRouter } = require('./routes/audioBookRouter');
 
 
 
@@ -30,13 +31,23 @@ app.use(express.json({extended: true, limit: '50mb'}))
 
 app.use('/api/user', userRouter);
 app.use('/api/book', bookRouter);
+app.use('/api/audioBook', audioBookRouter);
 app.use('/api/files', fileRouter);
+
 
 
 // put the HTML file containing your form in a directory named "public" (relative to where this script is located)
 // app.use('/', express.static("./public"));
 // app.get("/", express.static(path.join(__dirname, "./public")));
 // or using middilware app.use(express.static('public'));
+
+app.use(express.static('routes'));
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
+});
 
 // Error handle
 app.use(function(err, req, res, next) {
