@@ -24,7 +24,7 @@ async function createBook(req, res) {
             decodingBase64(img.imgFile, filePath);
             
             const newBook = new BookModel({
-                img: `/api/files/${img.filename}`,
+                img: `/api/files/images/${img.filename}`,
                 title,
                 description,
                 price,
