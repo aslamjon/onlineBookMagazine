@@ -25,7 +25,5 @@ data - </br>
 Name | Method | Url | Values |
 --- | --- | --- | --- |
 Create account | POST | /server/onlineBook/api/user/create | username, email, password |
-
 Login | POST | /server/onlineBook/api/user/login | username, password |
-
 GetMe | GET | /server/onlineBook/api/user | None |
