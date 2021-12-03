@@ -5,8 +5,9 @@ const { getFile } = require("../controllers/fileController");
 
 const router = Router();
 
-router.get('/:fileName', getFile)
-// router.get('/:fileName', checkUser, getFile)
+router.get('/images/:fileName', getFile)
+router.get('/audios/:fileName', getFile)
+// router.get('*', (req, res) => res.send({ message: "Page not found" }))
 
 module.exports = {
     fileRouter: router

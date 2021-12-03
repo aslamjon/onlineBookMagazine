@@ -5,9 +5,10 @@ const { encodingBase64, decodingBase64 } = require("../utiles");
 
 async function getFile(req, res) {
     const { fileName } = req.params;
-    // filePath = path.join(__dirname, `./../data/images/${fileName}`);
-    filePath = path.join(__dirname, `./../data/images/${fileName}`);
-
+    let folder = req.route.path.split('/')[1];
+    // let testFolder = `${req.url.replace(fileName, '').replace('/', '').replace('/', '')}`;
+    let filePath = path.join(__dirname, `./../data/${folder}/${fileName}`);
+    
     let file = 1;
     let base64 = '';
     try {
@@ -22,10 +23,6 @@ async function getFile(req, res) {
         fileName
     });
     else res.status(404).send({ message: "file not found" });
-}
-
-function saveFile(req, res) {
-
 }
 
 module.exports = {
