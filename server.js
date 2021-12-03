@@ -14,6 +14,7 @@ const { userRouter } = require("./routes/userRouter");
 const { bookRouter } = require('./routes/bookRouter');
 const { fileRouter } = require('./routes/fileRouter');
 const { audioBookRouter } = require('./routes/audioBookRouter');
+const { newsRouter } = require('./routes/newsRouter');
 
 
 
@@ -32,8 +33,9 @@ app.use(express.json({extended: true, limit: '50mb'}))
 app.use('/api/user', userRouter);
 app.use('/api/book', bookRouter);
 app.use('/api/audioBook', audioBookRouter);
-app.use('/api/files', fileRouter);
+app.use('/api/news', checkUser, newsRouter);
 
+app.use('/api/files', fileRouter);
 
 
 // put the HTML file containing your form in a directory named "public" (relative to where this script is located)
