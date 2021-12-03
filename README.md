@@ -13,6 +13,6 @@ $ yarn
 ```
 then should create folders like this:
 
-data -
-      | - audios
-      | - images
+data - </br>
+      | - audios </br>
+      | - images </br>
