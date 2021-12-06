@@ -46,7 +46,7 @@ app.use('/api/files', fileRouter);
 app.use(express.static('routes'));
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-    var err = new Error('Not Found');
+    var err = new Error('API Not Found. Please check it and try again.');
     err.status = 404;
     next(err);
 });
