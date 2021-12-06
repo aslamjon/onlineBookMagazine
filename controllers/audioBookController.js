@@ -118,8 +118,8 @@ async function deleteAudioBook(req, res) {
     let book = await AudioBookModel.findByIdAndDelete(id);
     if (!book) res.status(404).send({ message: "a Audio Book not found" });
     else {
-        let filePath = path.join(__dirname, `./../data/images/${book.img.replace('/api/files/images/', '')}`);
-        let audioFilePath = path.join(__dirname, `./../data/audios/${book.audio.replace('/api/files/audios/', '')}`);
+        let filePath = path.join(__dirname, `./../data/images/${book.img.replace('/api/files/', '')}`);
+        let audioFilePath = path.join(__dirname, `./../data/audios/${book.audio.replace('/api/files/', '')}`);
         let file1 = await unlink(filePath);
         let file2 = await unlink(audioFilePath);
         res.send({ message: "a Audio Book has been deleted"});

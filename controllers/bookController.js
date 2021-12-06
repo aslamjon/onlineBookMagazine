@@ -151,7 +151,8 @@ async function deleteBook(req, res) {
     let book = await BookModel.findByIdAndDelete(id);
     if (!book) res.status(404).send({ message: "a Book not found" });
     else {
-        let filePath = path.join(__dirname, `./../data/images/${book.img.replace('/api/files/', '')}`);
+        let filePath = path.join(__dirname, `./../data/${book.img.replace('/api/files/', '')}`);
+        console.log(filePath)
         let file = await unlink(filePath);
         res.send({ message: "a Book has been deleted"});
     }
