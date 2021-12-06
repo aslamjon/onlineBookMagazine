@@ -2,15 +2,17 @@
 const path = require("path");
 const { BookModel } = require("../models/bookModel");
 const { UserModel } = require("../models/userModel");
-const { decodingBase64, formatDate, unlink } = require("../utiles");
+const { decodingBase64, formatDate, unlink, getTime } = require("../utiles");
 
 async function createBook(req, res) {
     const { img, title, description, price, descount, author, year, genre, ISBN, language, bookFormat, tags } = req.body;
 
     const today = new Date();
     
-    
-    if ( !img.imgFile || !title || !description || !price || !author || !year || !genre || !language) res.status(400).send({ message: "Bad request" })
+    if ( !title || !description || !price || !author || !year || !genre || !language) res.status(400).send({ message: "Bad request" });
+    else if (!img) {
+        res.status(400).send({ message: "Bad request" })
+    }
     else {
         const bookExists = await BookModel.findOne({ title });
 
@@ -38,6 +40,7 @@ async function createBook(req, res) {
                 language,
                 bookFormat: bookFormat || null,
                 datePublished: formatDate('mm/dd/yyyy', today),
+                timePublished: getTime(24),
                 tags: tags || []
             });
             // newBook.tags.push('friend');
@@ -123,15 +126,21 @@ async function filterBook(req, res) {
         let { skip, limit } = req.query;
         skip = Number(skip);
         limit = Number(limit);
-        let { newest, date, category, editorPicks, publisher, year, priceRange } = req.body;
+
+        let { newest, date, category, editorPicks, publisher, yearRange, priceRange } = req.body;
         let bookExists = {};
-        if (skip <= limit) {
-            bookExists.results = await BookModel.find().skip(skip).limit(limit);
-            bookExists.count = await BookModel.find().count();
-        } else {
-            bookExists = await BookModel.find();
+        if (!newest && !date && !category && !editorPicks && !publisher && !yearRange && !priceRange) res.status(400).send({ message: "Bad request" });
+        else {
+            if (Boolean(newest)) newest = 1;
+            else newest = -1
+            if (skip <= limit) {
+                bookExists.results = await BookModel.find().skip(skip).limit(limit);
+                bookExists.count = await BookModel.find().count();
+            } else {
+                bookExists = await BookModel.find();
+            }
+            req.send({  })
         }
-        req.send({  })
     } catch (e) {
         console.log(e)
     }

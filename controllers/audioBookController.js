@@ -1,7 +1,7 @@
 const path = require("path");
 const { AudioBookModel } = require("../models/audioBookModel");
 const { UserModel } = require("../models/userModel");
-const { decodingBase64, formatDate, unlink } = require("../utiles");
+const { decodingBase64, formatDate, unlink, getTime } = require("../utiles");
 
 async function createAudioBook(req, res) {
     const { img, audio, title, description, price, descount, author, year, genre, ISBN, language, bookFormat, tags } = req.body;
@@ -36,6 +36,7 @@ async function createAudioBook(req, res) {
                 language,
                 bookFormat: bookFormat || null,
                 datePublished: formatDate('mm/dd/yyyy'),
+                timePublished: getTime(24),
                 tags: tags || []
             });
             // newBook.tags.push('friend');

@@ -60,6 +60,10 @@ const schema = new Schema({
         type: String,
         required: 'DatePublished is required'
     },
+    timePublished: {
+        type: String,
+        required: 'TimePublished is required'
+    },
     tags: [String],
     bestSelling: {
         type: Number,

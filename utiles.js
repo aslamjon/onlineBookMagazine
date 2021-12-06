@@ -132,6 +132,11 @@ function formatDate(format, date = new Date()) {
     return format.replace(/mm|dd|yy|yyy/gi, matched => map[matched])
 }
 
+function getTime(format = 24, date = new Date()) {
+    if (format == 24) return date.toUTCString().split(" ")[4];
+    else return date.toLocaleString().split(" ")[1];
+}
+
 
 module.exports = {
     writeData,
@@ -141,5 +146,6 @@ module.exports = {
     saveImgs,
     encodingBase64,
     decodingBase64,
-    formatDate
+    formatDate,
+    getTime
 }
