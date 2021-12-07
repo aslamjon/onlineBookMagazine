@@ -137,6 +137,12 @@ function getTime(format = 24, date = new Date()) {
     else return date.toLocaleString().split(" ")[1];
 }
 
+function logger(text, status = "INFO", filename = "./data/logger.json") {
+    content = { [status]: text };
+    fs.writeFile(filename, JSON.stringify(content, null, 4), 'utf8', (err) => {
+        if (err) console.log(err);
+    })
+}
 
 module.exports = {
     writeData,
@@ -147,5 +153,6 @@ module.exports = {
     encodingBase64,
     decodingBase64,
     formatDate,
-    getTime
+    getTime,
+    logger
 }
