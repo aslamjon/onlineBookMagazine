@@ -54,7 +54,7 @@ app.use(function(req, res, next) {
 // Error handle
 app.use(function(err, req, res, next) {
     console.log("[Global error middleware]", err.message);
-    res.status(500).send({
+    res.status(err.status || 500).send({
         message: err.message
     })
     next();
