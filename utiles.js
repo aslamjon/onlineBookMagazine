@@ -144,7 +144,7 @@ function getTime(format = 24, date = new Date()) {
 }
 
 function logger(text, status = "INFO", filename = "./data/logger.json") {
-    logData.push({ [status]: text })
+    logData.push({ [status]: text, date: `${formatDate('mm/dd/yyyy')} ${getTime()}` });
     fs.writeFile(filename, JSON.stringify(logData, null, 4), 'utf8', (err) => {
         if (err) console.log(err);
     })
