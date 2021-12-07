@@ -1,6 +1,12 @@
 const fs = require('fs');
 const path = require("path");
 const _ = require('lodash');
+let logData = []
+try {
+    logData = require('./data/logger.json');
+} catch (e) {
+    // console.log(e.message)
+}
 
 const writeData = (filename, content) => {
     fs.writeFile(filename, JSON.stringify(content, null, 4), 'utf8', (err) => {
@@ -138,8 +144,8 @@ function getTime(format = 24, date = new Date()) {
 }
 
 function logger(text, status = "INFO", filename = "./data/logger.json") {
-    content = { [status]: text };
-    fs.writeFile(filename, JSON.stringify(content, null, 4), 'utf8', (err) => {
+    logData.push({ [status]: text })
+    fs.writeFile(filename, JSON.stringify(logData, null, 4), 'utf8', (err) => {
         if (err) console.log(err);
     })
 }
