@@ -2,17 +2,15 @@
 const path = require("path");
 const { BookModel } = require("../models/bookModel");
 const { UserModel } = require("../models/userModel");
-const { decodingBase64, formatDate, unlink, getTime, logger } = require("../utiles");
+const { decodingBase64, formatDate, unlink, getTime, logger, ISODate, setYear } = require("../utiles");
 
 async function createBook(req, res) {
     const { img, title, description, price, descount, author, year, genre, ISBN, language, bookFormat, tags } = req.body;
 
-    const today = new Date();
     
     if ( !title || !description || !price || !author || !year || !genre || !language) res.status(400).send({ message: "Bad request" });
-    else if (!img) {
-        res.status(400).send({ message: "Bad request" })
-    }
+    else if (!Array.isArray(genre)) res.status(400).send({ message: "Bad request: Plase send 'genre' in Array" });
+    else if (!img) res.status(400).send({ message: "Bad request: Please send img" })
     else {
         try {
             const bookExists = await BookModel.findOne({ title });
@@ -40,7 +38,7 @@ async function createBook(req, res) {
                     ISBN: ISBN || null,
                     language,
                     bookFormat: bookFormat || null,
-                    datePublished: formatDate('mm/dd/yyyy', today),
+                    datePublished: formatDate("mm/dd/yyyy"),
                     timePublished: getTime(24),
                     tags: tags || []
                 });
@@ -138,20 +136,48 @@ async function filterBook(req, res) {
         let { newest, date, category, editorPicks, publisher, yearRange, priceRange } = req.body;
         let bookExists = {};
         let options = {};
+        let messages = [];
         if (!newest && !date && !category && !editorPicks && !publisher && !yearRange && !priceRange) res.status(400).send({ message: "Bad request" });
         else {
             if (Boolean(newest)) newest = -1;
-            else newest = 1
-            if (date.split("/").length == 3) options.datePublished = { $gte: date };
-            // keep on
+            else newest = 1;
+
+            let now = new Date();
+            let dayMilliseconds = 86400000;
+
+            options.$expr = {$and: []};
+
+            if (Object.keys(yearRange).length && yearRange.min <= yearRange.max) 
+                options.$expr = {
+                    $and: [
+                        { $gte: ["$year", String(yearRange.min)] }, 
+                        { $lte: ["$year", String(yearRange.max)] }
+                    ]
+                };
+
+            else messages.push("ERROR: yearRange. Please check payload");
+            
+            if (priceRange.min <= priceRange.max) options.$expr.$and.push({ $gte: ["$price", priceRange.min] }, { $lte: ["$price", priceRange.max] });
+            else messages.push("ERROR: PriceRange. Please check payload");
+            
+            if (date.toLowerCase() == 'today') options.$expr.$and.push({ $gte: ["$datePublished", formatDate('mm/dd/yyyy')] });
+            else if (date.toLowerCase() == 'week') options.$expr.$and.push({ $gte: ["$datePublished", formatDate('mm/dd/yyyy', new Date(now.valueOf()-(7*dayMilliseconds)))] });
+            else if (date.toLowerCase() == 'month') options.$expr.$and.push({ $gte: ["$datePublished", formatDate('mm/dd/yyyy', new Date(now.valueOf()-(30*dayMilliseconds)))] });
+            else if (date.toLowerCase() == 'year') options.$expr.$and.push({ $gte: ["$datePublished", formatDate('mm/dd/yyyy', new Date(now.valueOf()-(365*dayMilliseconds)))] });
+            
+            if (Array.isArray(category)) options.genre = { $all: category };
+            else messages.push("Please send category as array");
+
+            if (typeof publisher == 'string') options.publisher = publisher;
+            else messages.push("Please send publisher on the string");
 
             if (skip <= limit) {
-                bookExists.results = await BookModel.find().skip(skip).limit(limit);
-                bookExists.count = await BookModel.find().count();
+                bookExists.results = await BookModel.find(options).skip(skip).limit(limit);
+                bookExists.count = await BookModel.find(options).count();
             } else {
-                bookExists = await BookModel.find();
+                bookExists.results = await BookModel.find(options).sort();
             }
-            res.send({  })
+            res.send({ results: bookExists.results, errors: messages, count: bookExists.count ? bookExists.count : null });
         }
     } catch (e) {
         logger(`IN FILTER_BOOK: ${e.message}`, 'ERROR');
