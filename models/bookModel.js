@@ -35,10 +35,14 @@ const schema = new Schema({
         required: 'Author is required'
     },
     year: {
-        type: Number,
+        type: String,
         required: 'Year is required'
     },
-    genre: [String],
+    genre: [{
+        type: String,
+        lowercase: true,
+        trim: true
+    }],
     publisher: {
         type: String,
         required: 'publisher is required'
