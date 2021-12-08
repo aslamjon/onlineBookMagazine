@@ -1,0 +1,24 @@
+const { Schema, model, Types } = require('mongoose');
+
+const schema = new Schema({
+    productId: {
+        type: Types.ObjectId,
+    },
+    userId: {
+        type: Types.ObjectId,
+        ref: "User",
+        required: 'UserId is required'
+    },
+    createdAt: {
+        type: String,
+        required: 'CreatedAt is required'
+    },
+    createdTime: {
+        type: String,
+        required: 'createdTime is required'
+    }
+})
+
+module.exports = {
+    CardModel: model('Card', schema)
+}
