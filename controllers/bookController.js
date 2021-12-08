@@ -172,10 +172,10 @@ async function filterBook(req, res) {
             else messages.push("Please send publisher on the string");
 
             if (skip <= limit) {
-                bookExists.results = await BookModel.find(options).skip(skip).limit(limit);
+                bookExists.results = await BookModel.find(options).sort({ datePublished: newest, timePublished: newest }).skip(skip).limit(limit);
                 bookExists.count = await BookModel.find(options).count();
             } else {
-                bookExists.results = await BookModel.find(options).sort();
+                bookExists.results = await BookModel.find(options).sort({ datePublished: newest, timePublished: newest });
             }
             res.send({ results: bookExists.results, errors: messages, count: bookExists.count ? bookExists.count : null });
         }
