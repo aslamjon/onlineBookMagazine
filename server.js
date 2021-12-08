@@ -15,6 +15,7 @@ const { bookRouter } = require('./routes/bookRouter');
 const { fileRouter } = require('./routes/fileRouter');
 const { audioBookRouter } = require('./routes/audioBookRouter');
 const { newsRouter } = require('./routes/newsRouter');
+const { commentRouter } = require('./routes/commentRouter');
 
 
 
@@ -34,6 +35,7 @@ app.use('/api/user', userRouter);
 app.use('/api/book', bookRouter);
 app.use('/api/audioBook', audioBookRouter);
 app.use('/api/news', checkUser, newsRouter);
+app.use('/api/comment', commentRouter);
 
 app.use('/api/files', fileRouter);
 
