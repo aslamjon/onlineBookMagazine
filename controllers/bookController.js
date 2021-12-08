@@ -56,7 +56,7 @@ async function createBook(req, res) {
                 }
             }
         } catch (e) {
-            logger(`IN CREATE_BOOK: ${e.message}`, 'ERROR');
+            logger(`IN CREATE_BOOK: ${e.message}`, { status: 'ERROR', res });
         }
     }
 }
@@ -73,7 +73,7 @@ async function getBook(req, res) {
                 res.send(bookExists);
             }
         } catch (e) {
-            logger(`IN GET_BOOK: ${e.message}`, 'ERROR');
+            logger(`IN GET_BOOK: ${e.message}`, { status: 'ERROR', res });
         }
     }
 }
@@ -92,7 +92,7 @@ async function getBooks(req, res) {
         }
         res.send(bookExists);
     } catch (e) {
-        logger(`IN GET_BOOKS: ${e.message}`, 'ERROR');
+        logger(`IN GET_BOOKS: ${e.message}`, { status: 'ERROR', res });
     }
 }
 
@@ -124,7 +124,7 @@ async function toggleFavourite(req, res) {
             res.send({ message: "Favourite has been created" });
         }
     } catch (e) {
-        logger(`IN TOGGLE_BOOK: ${e.message}`, 'ERROR');
+        logger(`IN TOGGLE_BOOK: ${e.message}`, { status: 'ERROR', res });
     }
 }
 
@@ -180,7 +180,7 @@ async function filterBook(req, res) {
             res.send({ results: bookExists.results, errors: messages, count: bookExists.count ? bookExists.count : null });
         }
     } catch (e) {
-        logger(`IN FILTER_BOOK: ${e.message}`, 'ERROR');
+        logger(`IN FILTER_BOOK: ${e.message}`, { status: 'ERROR', res });
     }
 }
 
@@ -195,7 +195,7 @@ async function deleteBook(req, res) {
             res.send({ message: "a Book has been deleted"});
         }
     } catch (e) {
-        logger(`IN DELETE_BOOK: ${e.message}`, 'ERROR');
+        logger(`IN DELETE_BOOK: ${e.message}`, { status: 'ERROR', res });
     }
 }
 
@@ -223,7 +223,7 @@ async function updateBook(req, res) {
             res.send({ message: "This book has been updated" });
         }
     } catch (e) {
-        logger(`IN UPDATE_BOOK: ${e.message}`, 'ERROR');
+        logger(`IN UPDATE_BOOK: ${e.message}`, { status: 'ERROR', res });
     }
 }
 
@@ -235,7 +235,7 @@ async function bookForLandingPage(req, res) {
         const books = await BookModel.find().count();
         res.send({ popular, recommended, users, books, audioBook: 0, stories: 0 });
     } catch (e) {
-        logger(`IN BOOK_FOR_LANDING_PAGE: ${e.message}`, 'ERROR');
+        logger(`IN BOOK_FOR_LANDING_PAGE: ${e.message}`, { status: 'ERROR', res });
     }
 }
 module.exports = {
