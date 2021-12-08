@@ -10,6 +10,7 @@ async function createAudioBook(req, res) {
     const bookExists = await AudioBookModel.findOne({ title: title });
     if ( !img.imgFile || !audio.audioFile || !title || !description || !price || !author || !year || !genre || !language) res.status(400).send({ message: "Bad request" })
     else if (bookExists) res.status(400).send({ message: "This book is already exists" });
+    else if (!Array.isArray(genre)) res.status(400).send({ message: "Bad request: Plase send 'genre' in Array" });
     else if (audioFileFormat !== 'mp3') res.status(400).send({ message: `${audioFileFormat} format is not allowed. Please send only mp3 audio format for audio book` })
     else {
             const { userId } = req.user;
@@ -35,7 +36,7 @@ async function createAudioBook(req, res) {
                 ISBN: ISBN || null,
                 language,
                 bookFormat: bookFormat || null,
-                datePublished: formatDate('mm/dd/yyyy'),
+                datePublished: formatDate("mm/dd/yyyy"),
                 timePublished: getTime(24),
                 tags: tags || []
             });
