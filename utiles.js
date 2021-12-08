@@ -153,11 +153,12 @@ function getTime(format = 24, date = new Date()) {
     else return date.toLocaleString().split(" ")[1];
 }
 
-function logger(text, status = "INFO", filename = "./data/logger.json") {
+function logger(text, {status = "INFO", filename = "./data/logger.json", res = ''}) {
     logData.push({ [status]: text, date: `${formatDate('mm/dd/yyyy')} ${getTime()}` });
+    if (res) res.status(500).send({ message: "Something wrong!" });
     fs.writeFile(filename, JSON.stringify(logData, null, 4), 'utf8', (err) => {
         if (err) console.log(err);
-    })
+    });
 }
 
 module.exports = {
