@@ -135,7 +135,17 @@ function formatDate(format, date = new Date()) {
         yy: date.getFullYear().toString().slice(-2),
         yyyy: date.getFullYear()
     }
-    return format.replace(/mm|dd|yy|yyy/gi, matched => map[matched])
+    return format.replace(/mm|dd|yyyy|yy/gi, matched => map[matched])
+    return date.toLocaleDateString("en-US");
+}
+
+function ISODate(date = new Date()) {
+    return date.toISOString();
+}
+
+function setYear(year, date = new Date()) {
+    let Year = new Date().setFullYear(year);
+    return new Date(Year);
 }
 
 function getTime(format = 24, date = new Date()) {
@@ -160,5 +170,7 @@ module.exports = {
     decodingBase64,
     formatDate,
     getTime,
-    logger
+    logger,
+    ISODate,
+    setYear
 }
