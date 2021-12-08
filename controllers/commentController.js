@@ -5,7 +5,9 @@ const { formatDate, unlink, getTime, logger, ISODate, setYear } = require("../ut
 async function createComment(req, res) {
     try {
         const {comment, rating, commentFor} = req.body;
+        const isHave = await BookModel.findById(commentFor);
         if (!comment || !rating || typeof rating !== 'number' || !commentFor) req.status(400).send({ message: "Bad request" });
+        else if (!isHave) res.status(404).send({ message: "Product not found" });
         else {
             const newComment = await CommentModel({
                 commentFor: Types.ObjectId(commentFor),
