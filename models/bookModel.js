@@ -7,6 +7,10 @@ const schema = new Schema({
         type: String,
         required: 'Image is required'
     },
+    audio: {
+        type: String,
+        default: ""
+    },
     title: {
         type: String,
         required: 'Title is required',
