@@ -24,6 +24,7 @@ Name | Method | Url | Values |
 Create account | POST | /api/user/create | username, email, password |
 Login | POST | /api/user/login | username, password |
 GetMe | GET | /api/user | None |
+Update user | PUT | /api/user | firstName, lastName, phoneNumber |
 
 ### Book
 
@@ -73,3 +74,4 @@ Name | Method | Url | Values |
 Create Discount | POST | /api/discount/create | productId, discount_percent, active |
 Update Discount | PUT | /api/discount/:id | discount_percent OR/AND active |
 Delete Discount | DELETE | /api/discount/:id | None |
+Get Discount | GET | /api/discount/ | None |
