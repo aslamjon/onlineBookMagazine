@@ -1,17 +1,20 @@
 const { DiscountModel } = require('./../models/discountModel');
 const { BookModel } = require("../models/bookModel");
+const { UserModel } = require("../models/userModel");
 const { formatDate, logger } = require("../utiles");
 
 async function createDiscount(req, res) {
     try {
         const { productId, discount_percent, active } = req.body;
+        const { userId } = req.user;
         const productExists = await BookModel.findById(productId);
         if (!discount_percent || !active) res.status(400).send({ message: "Bed request" });
         else if (typeof discount_percent !== 'number') res.status(400).send({ message: "Bed request. Please send the type of discount_percent as a number" });
         else if (!productExists) res.status(404).send({ message: "Product not found" });
         else if (productExists.discountId) res.send({ message: "Discount is already created" });
         else {
-            const newDiscount = await DiscountModel({ 
+            const newDiscount = await DiscountModel({
+                userId,
                 discount_percent,
                 active: Boolean(active),
                 createdAt: formatDate("mm/dd/yyyy")
@@ -23,6 +26,20 @@ async function createDiscount(req, res) {
         }
     } catch (e) {
         logger(`IN CREATE_DISCOUNT: ${e.message}`, { status: "ERROR", res });
+    }
+}
+
+async function getDiscount(req, res) {
+    try {
+        const { userId } = req.user;
+        const exists = await UserModel.findById(userId);
+        if (!exists) res.status(404).send({ message: "User not found" });
+        else {
+            const discount = await DiscountModel.find({ userId });
+            res.send(discount);
+        }
+    } catch (e) {
+        logger(`IN GET_DISCOUNT: ${e.message}`, { status: "ERROR", res });
     }
 }
 
@@ -59,5 +76,6 @@ async function updateDicount(req, res) {
 module.exports = {
     createDiscount,
     deleteDicount,
-    updateDicount
+    updateDicount,
+    getDiscount
 }

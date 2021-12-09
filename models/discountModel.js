@@ -1,6 +1,9 @@
 const { Schema, model, Types } = require('mongoose');
 
 const schema = new Schema({
+    userId: {
+        type: Types.ObjectId
+    },
     discount_percent: {
         type: Number,
         required: "Discount Percent is required"
