@@ -66,3 +66,10 @@ Create Card | POST | /api/card/create | productId, quantity |
 Get Card | GET | /api/card/ | None |
 Update Card | PUT | /api/card/:id | quantity |
 Delete Card | DELETE | /api/card/:id | None |
+
+### Card
+Name | Method | Url | Values |
+--- | --- | --- | --- |
+Create Discount | POST | /api/discount/create | productId, discount_percent, active |
+Update Discount | PUT | /api/discount/:id | discount_percent OR/AND active |
+Delete Discount | DELETE | /api/discount/:id | None |
