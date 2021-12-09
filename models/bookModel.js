@@ -26,8 +26,10 @@ const schema = new Schema({
         type: Number,
         required: 'Price is required'
     },
-    discount: {
-        type: Number
+    discountId: {
+        type: Types.ObjectId,
+        unique: true,
+        ref: "Discount"
     },
     rating: {
         type: Number,

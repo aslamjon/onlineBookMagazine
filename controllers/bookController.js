@@ -85,10 +85,18 @@ async function getBooks(req, res) {
         limit = Number(limit);
         let bookExists = {};
         if (skip <= limit) {
-            bookExists.results = await BookModel.find().skip(skip).limit(limit);
+            bookExists.results = await BookModel.find()
+                .populate({ 
+                    path: "discountId", 
+                    select: ["_id","discount_percent","active","createdAt","modifiedAt"]
+                })
+                .skip(skip).limit(limit);
             bookExists.count = await BookModel.find().count();
         } else {
-            bookExists = await BookModel.find();
+            bookExists = await BookModel.find().populate({ 
+                path: "discountId", 
+                select: ["_id","discount_percent","active","createdAt","modifiedAt"]
+            });
         }
         res.send(bookExists);
     } catch (e) {
