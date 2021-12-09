@@ -58,7 +58,28 @@ async function getMe(req, res) {
     }
 }
 
+async function updateUser(req, res) {
+    try {
+        const { userId } = req.user;
+        const { firstName, lastName, phoneNumber } = req.body;
+        const userExists = UserModel.findById(userId);
+        if (!firstName && !lastName && !phoneNumber) res.status.send({ message: "Bad request" });
+        else if (!userExists) res.status(404).send({ message: "User not found" });
+        else {
+            let newUpdate = await UserModel.findOneAndUpdate({ _id: userId }, {
+                firstName: firstName || userExists.firstName,
+                lastName: lastName || userExists.lastName,
+                phoneNumber: phoneNumber || userExists.phoneNumber
+            });
+            res.send({ message: "User has been updated" })
+        }
+    } catch (e) {
+        logger(`IN UPDATE_USER: ${e.message}`, { status: "ERROR", res });
+    }
+}
+
 module.exports = {
     createUser,
-    getMe
+    getMe,
+    updateUser
 }
