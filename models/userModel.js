@@ -32,12 +32,15 @@ const schema = new Schema({
     favourite: Schema.Types.Mixed,
     firstName: {
         type: String,
+        default: ''
     },
     lastName: {
         type: String,
+        default: ''
     },
     phoneNumber: {
         type: String,
+        default: ''
     },
 })
 
