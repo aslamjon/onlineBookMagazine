@@ -1,5 +1,6 @@
 const path = require("path");
-const { AudioBookModel } = require("../models/audioBookModel");
+
+const { BookModel } = require("../models/bookModel");
 const { UserModel } = require("../models/userModel");
 const { decodingBase64, formatDate, unlink, getTime } = require("../utiles");
 
@@ -7,7 +8,7 @@ async function createAudioBook(req, res) {
     const { img, audio, title, description, price, descount, author, year, genre, ISBN, language, bookFormat, tags } = req.body;
 
     let audioFileFormat = audio.filename.split('.').pop();
-    const bookExists = await AudioBookModel.findOne({ title: title });
+    const bookExists = await BookModel.findOne({ title: title });
     if ( !img.imgFile || !audio.audioFile || !title || !description || !price || !author || !year || !genre || !language) res.status(400).send({ message: "Bad request" })
     else if (bookExists) res.status(400).send({ message: "This book is already exists" });
     else if (!Array.isArray(genre)) res.status(400).send({ message: "Bad request: Plase send 'genre' in Array" });
@@ -21,7 +22,7 @@ async function createAudioBook(req, res) {
             decodingBase64(img.imgFile, imgPath);
             decodingBase64(audio.audioFile, audioPath);
             
-            const newBook = new AudioBookModel({
+            const newBook = new BookModel({
                 img: `/api/files/images/${img.filename}`,
                 audio: `/api/files/audios/${audio.filename}`,
                 title,
@@ -56,7 +57,7 @@ async function createAudioBook(req, res) {
 
 async function getAudioBook(req, res) {
     const { title } = req.body;
-    const bookExists = await AudioBookModel.findOne({ title });
+    const bookExists = await BookModel.findOne({ title });
     if (!title) res.staatus(400).send({ message: "bad request. Please check body and try again" })
     else if (!bookExists) res.status(404).send({ message: `${title} has not found` });
     else {
@@ -70,10 +71,10 @@ async function getAudioBooks(req, res) {
         limit = Number(limit);
         let bookExists = {};
         if (skip <= limit) {
-            bookExists.results = await AudioBookModel.find().skip(skip).limit(limit);
-            bookExists.count = await AudioBookModel.find().count();
+            bookExists.results = await BookModel.find().skip(skip).limit(limit);
+            bookExists.count = await BookModel.find().count();
         } else {
-            bookExists = await AudioBookModel.find();
+            bookExists = await BookModel.find();
         }
         res.send(bookExists);
     } catch (e) {
@@ -85,7 +86,7 @@ async function toggleFavourite(req, res) {
     try {
         const { audioBookId } = req.body;
         const { userId } = req.user;
-        const bookExists = await AudioBookModel.findById(audioBookId);
+        const bookExists = await BookModel.findById(audioBookId);
         const user = await UserModel.findById(userId);
 
         if (!audioBookId) res.status(400).send({ message: "Bad request. Please enter audio book's id and try again" });
@@ -116,7 +117,7 @@ async function toggleFavourite(req, res) {
 
 async function deleteAudioBook(req, res) {
     const { id } = req.params;
-    let book = await AudioBookModel.findByIdAndDelete(id);
+    let book = await BookModel.findByIdAndDelete(id);
     if (!book) res.status(404).send({ message: "a Audio Book not found" });
     else {
         let filePath = path.join(__dirname, `./../data/images/${book.img.replace('/api/files/', '')}`);
@@ -129,12 +130,12 @@ async function deleteAudioBook(req, res) {
 
 async function updateAudioBook(req, res) {
     const { id } = req.params;
-    const bookExists = await AudioBookModel.findById(id);
+    const bookExists = await BookModel.findById(id);
     if (!bookExists) res.status(404).send({ messaage: "a Audio Book not found" });
     else {
         const { img, title, description, price, descount, rating, author, year, genre, ISBN, language, bookFormat, tags } = req.body;
         
-        const bookUpdate = await AudioBookModel.findOneAndUpdate({ _id: id }, {
+        const bookUpdate = await BookModel.findOneAndUpdate({ _id: id }, {
             title: title || bookExists.title,
             description: description || bookExists.description,
             price: price || bookExists.price,

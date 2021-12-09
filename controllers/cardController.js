@@ -1,18 +1,19 @@
-const { Schema, Types } = require('mongoose');
+const { Types } = require('mongoose');
 const { CardModel } = require('./../models/cardModel');
 const { BookModel } = require("../models/bookModel");
-const { formatDate, unlink, getTime, logger, ISODate, setYear } = require("../utiles");
+const { formatDate, getTime, logger } = require("../utiles");
 
 async function createCard(req, res) {
     try {
-        const { productId } = req.body;
+        const { productId, quantity } = req.body;
         const isHave = await BookModel.findById(productId);
-        if (!productId) res.status(400).send({ message: "Bad request" });
+        if (!productId || !quantity) res.status(400).send({ message: "Bad request" });
         else if (!isHave) res.status(404).send({ message: "Product not found" });
         else {
             const newCard = await CardModel({
                 productId: Types.ObjectId(productId),
                 userId: req.user.userId,
+                quantity,
                 createdAt: formatDate("mm/dd/yyyy"),
                 createdTime: getTime(24)
             });
@@ -47,10 +48,40 @@ async function getCard(req, res) {
     }
 }
 
+async function deleteCard(req, res) {
+    try {
+        const {id} = req.params;
+        const cardExists = await CardModel.findByIdAndDelete(id);
+        if (!cardExists) res.status(404).send({ message: "Card not found" });
+        else res.send({ message: "Card has been deleted" });
+    } catch (e) {
+        logger(`IN DELETE_CARD: ${e.message}`, { status: "ERROR", res });
+    }
+}
+
+async function updateCard(req, res) {
+    try {
+        const {id} = req.params;
+        const cardExists = await CardModel.findById(id);
+        if (!cardExists) res.status(404).send({ messaage: "Card not found" });
+        else {
+            const { quantity } = req.body;
+            const bookUpdate = await CardModel.findOneAndUpdate({ _id: id }, {
+                quantity: quantity || cardExists.quantity
+            });
+            res.send({ message: "Card has been updated" });
+        }
+    } catch (e) {
+        logger(`IN UPDATE_CARD: ${e.message}`, { status: "ERROR", res });
+    }
+}
+
 
 // .populate('books.$*.author');
 
 module.exports = {
     createCard,
-    getCard
+    getCard,
+    deleteCard,
+    updateCard
 }
