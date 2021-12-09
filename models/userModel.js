@@ -29,7 +29,16 @@ const schema = new Schema({
         required: true,
         default: 'user'
     },
-    favourite: Schema.Types.Mixed
+    favourite: Schema.Types.Mixed,
+    firstName: {
+        type: String,
+    },
+    lastName: {
+        type: String,
+    },
+    phoneNumber: {
+        type: String,
+    },
 })
 
 const schemaBlackList = new Schema({
