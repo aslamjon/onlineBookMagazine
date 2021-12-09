@@ -58,3 +58,11 @@ Create News | POST | /api/news/create | img, title, description |
 Get News | GET | /api/news | None |
 Delete a News | DELETE | /api/news/:ID | None |
 Update a News | PUT | /api/news/:ID | Any |
+
+### Card
+Name | Method | Url | Values |
+--- | --- | --- | --- |
+Create Card | POST | /api/card/create | productId, quantity |
+Get Card | GET | /api/card/ | None |
+Update Card | PUT | /api/card/:id | quantity |
+Delete Card | DELETE | /api/card/:id | None |
