@@ -37,10 +37,10 @@ async function getCard(req, res) {
 
         let cardExsists = {};
         if (skip <= limit) {
-            cardExsists.results = await CardModel.find(id ? { userId: Types.ObjectId(id) } : null).sort({ createdAt: newest, createdTime: newest }).populate({ path: 'productId', select: 'title'}).skip(skip).limit(limit);
+            cardExsists.results = await CardModel.find(id ? { userId: Types.ObjectId(id) } : null).sort({ createdAt: newest, createdTime: newest }).populate({ path: 'productId', select: ['title', 'description', 'img', 'price', 'descount']}).skip(skip).limit(limit);
             cardExsists.count = await CardModel.find(id ? { userId: Types.ObjectId(id) } : null).count();
         } else {
-            cardExsists.results = await CardModel.find(id ? { userId: Types.ObjectId(id) } : null).sort({ createdAt: newest, createdTime: newest }).populate({ path: 'productId', select: 'title'});
+            cardExsists.results = await CardModel.find(id ? { userId: Types.ObjectId(id) } : null).sort({ createdAt: newest, createdTime: newest }).populate({ path: 'productId', select: ['title', 'description', 'img', 'price', 'descount']});
         }
         res.send({ results: cardExsists.results, count: cardExsists.count ? cardExsists.count : null });
     } catch (e) {
